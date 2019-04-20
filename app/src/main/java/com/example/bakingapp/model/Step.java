@@ -3,37 +3,25 @@ package com.example.bakingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Step implements Parcelable {
-
-//    {
-//        "id": 0,
-//            "shortDescription": "Recipe Introduction",
-//            "description": "Recipe Introduction",
-//            "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4",
-//            "thumbnailURL": ""
-//    }
-
+public class Step {
     @SerializedName("id")
+    @Expose
     private Integer id;
     @SerializedName("shortDescription")
+    @Expose
     private String shortDescription;
     @SerializedName("description")
+    @Expose
     private String description;
     @SerializedName("videoURL")
-    private String videoUrl;
+    @Expose
+    private String videoURL;
     @SerializedName("thumbnailURL")
-    private String thumbnailUrl;
-
-    public Step(Integer id, String shortDescription, String description,
-                String videoUrl, String thumbnailUrl) {
-        this.id = id;
-        this.shortDescription = description;
-        this.description = description;
-        this.videoUrl = videoUrl;
-        this.thumbnailUrl = thumbnailUrl;
-    }
+    @Expose
+    private String thumbnailURL;
 
     public Integer getId() {
         return id;
@@ -43,7 +31,9 @@ public class Step implements Parcelable {
         this.id = id;
     }
 
-    public String getShortDescription() { return shortDescription; }
+    public String getShortDescription() {
+        return shortDescription;
+    }
 
     public void setShortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
@@ -57,55 +47,19 @@ public class Step implements Parcelable {
         this.description = description;
     }
 
-    public String getVideoUrl() {
-        return videoUrl;
+    public String getVideoURL() {
+        return videoURL;
     }
 
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+    public void setVideoURL(String videoURL) {
+        this.videoURL = videoURL;
     }
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
+    public String getThumbnailURL() {
+        return thumbnailURL;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
-
-    // Parcelable implementation
-    protected Step(Parcel in) {
-        id = in.readInt();
-        shortDescription = in.readString();
-        description = in.readString();
-        videoUrl = in.readString();
-        thumbnailUrl = in.readString();
-    }
-
-    public static final Creator<Step> CREATOR = new Creator<Step>() {
-        @Override
-        public Step createFromParcel(Parcel in) {
-            return new Step(in);
-        }
-
-        @Override
-        public Step[] newArray(int size) {
-            return new Step[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(shortDescription);
-        dest.writeString(description);
-        dest.writeString(videoUrl);
-        dest.writeString(thumbnailUrl);
-
+    public void setThumbnailURL(String thumbnailURL) {
+        this.thumbnailURL = thumbnailURL;
     }
 }
