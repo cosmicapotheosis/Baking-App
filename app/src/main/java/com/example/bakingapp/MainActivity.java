@@ -1,6 +1,5 @@
 package com.example.bakingapp;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +12,6 @@ import com.example.bakingapp.network.RetrofitClientInstance;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getRecipes() {
-        Call<List<Recipe>> call = service.getRecipes();
-        call.enqueue(new Callback<List<Recipe>>() {
+        Call<ArrayList<Recipe>> call = service.getRecipes();
+        call.enqueue(new Callback<ArrayList<Recipe>>() {
             @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+            public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
                 if (response.isSuccessful()) {
                     for (Recipe r : response.body()) {
                         Log.d("MainActivity", r.getName());
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Something went wrong... Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
