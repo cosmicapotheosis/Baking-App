@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClientInstance {
 
     private static Retrofit retrofit;
-    private static final String BASE_URL = "http://go.udacity.com/android-baking-app-json";
+    private static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
