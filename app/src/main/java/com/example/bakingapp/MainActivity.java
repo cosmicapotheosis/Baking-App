@@ -13,10 +13,13 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecipeService service;
 
-    private ArrayList<Recipe> mRecipes;
-    private ArrayList<String> mThumbnailUrls;
+    private Map<Recipe, String> mThumbnailUrlsMap = new HashMap<Recipe, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
                 if (response.isSuccessful()) {
-                    mRecipes = response.body();
-                    mThumbnailUrls = getRecyclerViewThumbnailUrls(mRecipes);
+                    // Iterate through list of Recipes and assign each Recipe a thumbnail url
+                    for (Recipe r : response.body()) {
+                        mThumbnailUrlsMap.put(r, getRecyclerViewThumbnailUrl(r));
+                    }
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -64,48 +68,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Iterates through list of Recipes and returns a list of urls for thumbnails corresponding to each recipe
+     * Searches within  a Recipe for a thumbnail url to use
      *
-     * @param recipes
-     * @return ArrayList of urls to use for RecyclerView thumbnails
+     * @param recipe
+     * @return url to use for RecyclerView thumbnails
      */
-    private ArrayList<String> getRecyclerViewThumbnailUrls(ArrayList<Recipe> recipes) {
-        ArrayList<String> recyclerViewThumbnailUrls = new ArrayList<String>();
+    private String getRecyclerViewThumbnailUrl(Recipe recipe) {
+        // If an image is not included for the recipe, get the first image available from within the Recipe's steps
+        if (Strings.isNullOrEmpty(recipe.getImage())) {
+            // Use Google Guava to find first Step with a thumbnailURL
+            Step stepWithVideoThumbnail = Iterables.tryFind(recipe.getSteps(),
+                    new Predicate<Step>() {
+                        @Override
+                        public boolean apply(Step input) {
+                            return !input.getVideoUrl().isEmpty() && input.getVideoUrl() != null;
+                        }
+                    }).orNull();
+            // If there isn't a thumbnailURL, use the first available videoURL
+            Step stepWithThumbnail = Iterables.tryFind(recipe.getSteps(),
+                    new Predicate<Step>() {
+                        @Override
+                        public boolean apply(Step input) {
+                            return !input.getThumbnailUrl().isEmpty() && input.getThumbnailUrl() != null;
+                        }
+                    }).orNull();
 
-        for (Recipe r : recipes) {
-            // If an image is not included for the recipe, get the first images from the recipe's steps
-            if (Strings.isNullOrEmpty(r.getImage())) {
-                // Use Google Guava to find first Step with a thumbnail
-                // If thumbnailURL is empty, use videoURL
-                Step stepWithVideoThumbnail = Iterables.tryFind(r.getSteps(),
-                        new Predicate<Step>() {
-                            @Override
-                            public boolean apply(Step input) {
-                                return !input.getVideoUrl().isEmpty() && input.getVideoUrl() != null;
-                            }
-                        }).orNull();
-
-                Step stepWithThumbnail = Iterables.tryFind(r.getSteps(),
-                        new Predicate<Step>() {
-                            @Override
-                            public boolean apply(Step input) {
-                                return !input.getThumbnailUrl().isEmpty() && input.getThumbnailUrl() != null;
-                            }
-                        }).orNull();
-
-                if (stepWithThumbnail != null)
-                    recyclerViewThumbnailUrls.add(stepWithThumbnail.getThumbnailUrl());
-                else
-                    recyclerViewThumbnailUrls.add(stepWithVideoThumbnail.getVideoUrl());
-            } else {
-                recyclerViewThumbnailUrls.add(r.getImage());
-            }
-        }
-        // Make sure all recipes have a thumbnail
-        if (recyclerViewThumbnailUrls.size() == recipes.size()) {
-            return recyclerViewThumbnailUrls;
+            if (stepWithThumbnail != null)
+                return stepWithThumbnail.getThumbnailUrl();
+            else
+                return stepWithVideoThumbnail.getVideoUrl();
         } else {
-            return null;
+            // If an image exists for a Recipe, return that image
+            return recipe.getImage();
         }
     }
 }
