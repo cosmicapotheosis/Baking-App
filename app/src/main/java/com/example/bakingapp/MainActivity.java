@@ -1,7 +1,12 @@
 package com.example.bakingapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Movie;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,20 +26,36 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipeAdapter.ListItemClickListener {
+
+    // Constant for logging
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecipeService service;
 
-    private Map<Recipe, String> mThumbnailUrlsMap = new HashMap<Recipe, String>();
+    @BindView(R.id.recyclerview_recipes)
+    RecyclerView mRecyclerView;
+
+    private RecipeAdapter mRecipeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        // Lay out recipes in a 2 wide grid
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mRecipeAdapter = new RecipeAdapter(this);
+        mRecyclerView.setAdapter(mRecipeAdapter);
 
         service = RetrofitClientInstance.getRetrofitInstance().create(RecipeService.class);
         getRecipes();
@@ -47,9 +68,15 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
                 if (response.isSuccessful()) {
                     // Iterate through list of Recipes and assign each Recipe a thumbnail url
+                    ArrayList<String> recipeNames = new ArrayList<String>();
+                    ArrayList<String> thumbnailUrls = new ArrayList<String>();
                     for (Recipe r : response.body()) {
-                        mThumbnailUrlsMap.put(r, getRecyclerViewThumbnailUrl(r));
+                        recipeNames.add(r.getName());
+                        thumbnailUrls.add(getRecyclerViewThumbnailUrl(r));
                     }
+                    // Populate RecyclerView
+                    mRecipeAdapter.setmRecipeNames(recipeNames);
+                    mRecipeAdapter.setmThumbnailUrls(thumbnailUrls);
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -101,5 +128,20 @@ public class MainActivity extends AppCompatActivity {
             // If an image exists for a Recipe, return that image
             return recipe.getImage();
         }
+    }
+
+    /**
+     * Use the list index to define the Recipe object that is passed as an extra to the detail activity.
+     * Recipe object implements parcelable in order to be passed as extra.
+     * @param clickedItemIndex
+     */
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+        Context context = MainActivity.this;
+//        Class destinationActivity = DetailActivity.class;
+//        Intent startDetailActivityIntent = new Intent(context, destinationActivity);
+//        Movie movieToPass = mMoviesList.get(clickedItemIndex);
+//        startDetailActivityIntent.putExtra("Movie", movieToPass);
+//        startActivity(startDetailActivityIntent);
     }
 }
