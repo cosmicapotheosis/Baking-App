@@ -6,6 +6,7 @@ import android.graphics.Movie;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
         ButterKnife.bind(this);
 
         // Lay out recipes in a 2 wide grid
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecipeAdapter = new RecipeAdapter(this);

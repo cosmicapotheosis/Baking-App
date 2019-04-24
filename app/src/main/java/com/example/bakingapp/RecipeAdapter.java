@@ -89,7 +89,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
                     .into(recipeAdapterViewHolder.mRecipeThumbnailImageView);
         } else {
             Picasso.get()
-                    .load(R.drawable.loading)
+                    .load(R.drawable.download)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.error)
                     .fit()
