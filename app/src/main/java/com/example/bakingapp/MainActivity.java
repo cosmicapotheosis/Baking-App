@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
 
     private RecipeAdapter mRecipeAdapter;
 
+    private ArrayList<Recipe> mRecipes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
                         thumbnailUrls.add(getRecyclerViewThumbnailUrl(r));
                     }
                     // Populate RecyclerView
+                    mRecipes = response.body();
                     mRecipeAdapter.setmRecipeNames(recipeNames);
                     mRecipeAdapter.setmThumbnailUrls(thumbnailUrls);
                 } else {
@@ -138,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
     @Override
     public void onListItemClick(int clickedItemIndex) {
         Context context = MainActivity.this;
-//        Class destinationActivity = DetailActivity.class;
-//        Intent startDetailActivityIntent = new Intent(context, destinationActivity);
-//        Movie movieToPass = mMoviesList.get(clickedItemIndex);
-//        startDetailActivityIntent.putExtra("Movie", movieToPass);
-//        startActivity(startDetailActivityIntent);
+        Class destinationActivity = RecipeActivity.class;
+        Intent startRecipeActivityIntent = new Intent(context, destinationActivity);
+        Recipe recipeToPass = mRecipes.get(clickedItemIndex);
+        startRecipeActivityIntent.putExtra("Recipe", recipeToPass);
+        startActivity(startRecipeActivityIntent);
     }
 }
