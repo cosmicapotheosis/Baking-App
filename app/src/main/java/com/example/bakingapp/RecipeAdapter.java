@@ -1,9 +1,6 @@
 package com.example.bakingapp;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.common.io.Files;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdapterViewHolder> {
 
@@ -73,15 +70,31 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
      */
     @Override
     public void onBindViewHolder(@NonNull RecipeAdapterViewHolder recipeAdapterViewHolder, int position) {
-        // Populate the image view
+        // Retrieve thumbnail url
         String thumbnailUrl = mThumbnailUrls.get(position);
+        String fileExt = Files.getFileExtension(thumbnailUrl);
 
-        Picasso.get()
-                .load(thumbnailUrl)
-                .placeholder(R.drawable.loading)
-                .error(R.drawable.error)
-                .fit()
-                .into(recipeAdapterViewHolder.mRecipeThumbnailImageView);
+        // If the file is not an image, show a placeholder, otherwise show the image
+        if(fileExt.equals("jpeg")
+            || fileExt.equals("jpg")
+            || fileExt.equals("png")
+            || fileExt.equals("gif")
+            || fileExt.equals("tiff")
+            || fileExt.equals("bmp")) {
+            Picasso.get()
+                    .load(thumbnailUrl)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.error)
+                    .fit()
+                    .into(recipeAdapterViewHolder.mRecipeThumbnailImageView);
+        } else {
+            Picasso.get()
+                    .load(R.drawable.loading)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.error)
+                    .fit()
+                    .into(recipeAdapterViewHolder.mRecipeThumbnailImageView);
+        }
 
         // Populate the text view
         String recipeName = mRecipeNames.get(position);
@@ -116,30 +129,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
     public void setmRecipeNames(ArrayList<String> recipeNames) {
         mRecipeNames = recipeNames;
         notifyDataSetChanged();
-    }
-
-    public static Bitmap retriveVideoFrameFromVideo(String videoPath) throws Throwable
-    {
-        Bitmap bitmap = null;
-        MediaMetadataRetriever mediaMetadataRetriever = null;
-        try
-        {
-            mediaMetadataRetriever = new MediaMetadataRetriever();
-            if (Build.VERSION.SDK_INT >= 14)
-                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
-            else
-                mediaMetadataRetriever.setDataSource(videoPath);
-                bitmap = mediaMetadataRetriever.getFrameAtTime();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Throwable("Exception in retriveVideoFrameFromVideo(String videoPath)" + e.getMessage());
-
-        } finally {
-            if (mediaMetadataRetriever != null) {
-                mediaMetadataRetriever.release();
-            }
-        }
-        return bitmap;
     }
 
     public class RecipeAdapterViewHolder extends RecyclerView.ViewHolder
