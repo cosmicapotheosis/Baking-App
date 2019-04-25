@@ -1,6 +1,7 @@
 package com.example.bakingapp;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.bakingapp.model.Step;
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -71,8 +75,31 @@ public class StepAdapter extends
     @Override
     public void onBindViewHolder(@NonNull StepAdapterViewHolder stepAdapterViewHolder, int i) {
         Step step = mSteps.get(i);
+        String fileExt = Files.getFileExtension(step.getThumbnailUrl());
         // Set TextViews..
         stepAdapterViewHolder.mStepShortDescTextView.setText(step.getShortDescription());
+        // Set ImageView
+        if (Strings.isNullOrEmpty(step.getThumbnailUrl())
+            || !fileExt.equals("jpeg")
+            || !fileExt.equals("jpg")
+            || !fileExt.equals("png")
+            || !fileExt.equals("gif")
+            || !fileExt.equals("tiff")
+            || !fileExt.equals("bmp")) {
+            Picasso.get()
+                    .load(R.drawable.download)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.error)
+                    .fit()
+                    .into(stepAdapterViewHolder.mStepThumbnailImageView);
+        } else {
+            Picasso.get()
+                    .load(step.getThumbnailUrl())
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.error)
+                    .fit()
+                    .into(stepAdapterViewHolder.mStepThumbnailImageView);
+        }
     }
 
     /**
@@ -100,10 +127,12 @@ public class StepAdapter extends
             implements View.OnClickListener {
 
         public final TextView mStepShortDescTextView;
+        public final ImageView mStepThumbnailImageView;
 
         public StepAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             mStepShortDescTextView = (TextView) itemView.findViewById(R.id.tv_step_short_desc);
+            mStepThumbnailImageView = (ImageView) itemView.findViewById(R.id.iv_step_thumbnail);
             itemView.setOnClickListener(this);
         }
 
