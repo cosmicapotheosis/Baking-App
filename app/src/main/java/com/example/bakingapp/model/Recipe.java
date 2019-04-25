@@ -120,9 +120,9 @@ public class Recipe implements Parcelable {
     @SerializedName("name")
     private String name;
     @SerializedName("ingredients")
-    private ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
+    private ArrayList<Ingredient> ingredients = new ArrayList<>();
     @SerializedName("steps")
-    private ArrayList<Step> steps = new ArrayList<Step>();
+    private ArrayList<Step> steps = new ArrayList<>();
     @SerializedName("servings")
     private Integer servings;
     @SerializedName("image")
@@ -218,8 +218,8 @@ public class Recipe implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.readTypedList(ingredients, Ingredient.CREATOR);
-        dest.readTypedList(steps, Step.CREATOR);
+        dest.writeTypedList(ingredients);
+        dest.writeTypedList(steps);
         dest.writeInt(servings);
         dest.writeString(image);
     }

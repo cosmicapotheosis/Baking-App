@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Lay out recipes in a 2 wide grid
+        // Lay out recipes in a linear layout
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
                     mRecipes = response.body();
                     mRecipeAdapter.setmRecipeNames(recipeNames);
                     mRecipeAdapter.setmThumbnailUrls(thumbnailUrls);
+                    Log.d(TAG, mRecipes.get(0).getIngredients().get(0).getIngredient());
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
