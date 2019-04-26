@@ -1,6 +1,8 @@
 package com.example.bakingapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Movie;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -79,18 +81,24 @@ public class RecipeActivity extends AppCompatActivity
             mIngredientRecyclerView.setNestedScrollingEnabled(false);
             mIngredientAdapter.setmIngredients(mRecipe.getIngredients());
 
+            mSteps = mRecipe.getSteps();
             LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
             mStepRecyclerView.setLayoutManager(layoutManager2);
             mStepRecyclerView.setHasFixedSize(true);
             mStepAdapter = new StepAdapter(this);
             mStepRecyclerView.setAdapter(mStepAdapter);
             mStepRecyclerView.setNestedScrollingEnabled(false);
-            mStepAdapter.setmSteps(mRecipe.getSteps());
+            mStepAdapter.setmSteps(mSteps);
         }
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-
+        Context context = RecipeActivity.this;
+        Class destinationActivity = StepActivity.class;
+        Intent startStepActivityIntent = new Intent(context, destinationActivity);
+        Step stepToPass = mSteps.get(clickedItemIndex);
+        startStepActivityIntent.putExtra("Step", stepToPass);
+        startActivity(startStepActivityIntent);
     }
 }

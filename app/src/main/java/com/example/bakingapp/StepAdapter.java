@@ -79,6 +79,7 @@ public class StepAdapter extends
         // Set TextViews..
         stepAdapterViewHolder.mStepShortDescTextView.setText(step.getShortDescription());
         // Set ImageView
+        // Display a placeholder if a thumbnailURL doesn't exist or is the wrong type
         if (Strings.isNullOrEmpty(step.getThumbnailUrl())
             || !fileExt.equals("jpeg")
             || !fileExt.equals("jpg")
