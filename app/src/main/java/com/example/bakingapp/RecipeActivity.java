@@ -51,9 +51,9 @@ public class RecipeActivity extends AppCompatActivity
 
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity.hasExtra("Recipe")) {
-            // save movie info to member variable
             mRecipe = intentThatStartedThisActivity.getParcelableExtra("Recipe");
             setTitle(mRecipe.getName());
+            mSteps = mRecipe.getSteps();
 
             if (Strings.isNullOrEmpty(mRecipe.getImage())) {
                 Picasso.get()
@@ -72,8 +72,8 @@ public class RecipeActivity extends AppCompatActivity
             }
 
             // Lay out ingredients in a linear layout
-            LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
-            mIngredientRecyclerView.setLayoutManager(layoutManager1);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            mIngredientRecyclerView.setLayoutManager(layoutManager);
             mIngredientRecyclerView.setHasFixedSize(true);
             mIngredientAdapter = new IngredientAdapter();
             mIngredientRecyclerView.setAdapter(mIngredientAdapter);
@@ -81,7 +81,6 @@ public class RecipeActivity extends AppCompatActivity
             mIngredientAdapter.setmIngredients(mRecipe.getIngredients());
 
             // Create steps list fragment
-            mSteps = mRecipe.getSteps();
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("steps", mSteps);
             StepListFragment stepListFragment = new StepListFragment();
@@ -94,10 +93,12 @@ public class RecipeActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Start a new Activity when a step list item is clicked
+     * @param position
+     */
     @Override
     public void onStepSelected(int position) {
-        Toast.makeText(this, "Position clicked = " + position, Toast.LENGTH_LONG).show();
-
         Bundle bundle = new Bundle();
         bundle.putParcelable("Step", mSteps.get(position));
 
