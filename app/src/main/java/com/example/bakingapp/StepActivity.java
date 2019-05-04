@@ -56,7 +56,7 @@ public class StepActivity extends AppCompatActivity {
 
             mDescTextView.setText(mStep.getDescription());
 
-            // Initialize the player.
+            // Initialize the player if the url is a video
             String fileExt = Files.getFileExtension(mStep.getVideoUrl());
             if(fileExt.equals("mp4")) {
                 initializePlayer(Uri.parse(mStep.getVideoUrl()));
@@ -89,10 +89,11 @@ public class StepActivity extends AppCompatActivity {
      * Release ExoPlayer.
      */
     private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
-
+        if (mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 
     /**

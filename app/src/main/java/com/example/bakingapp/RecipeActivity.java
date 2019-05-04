@@ -3,12 +3,14 @@ package com.example.bakingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Movie;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.bakingapp.model.Ingredient;
 import com.example.bakingapp.model.Recipe;
@@ -22,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RecipeActivity extends AppCompatActivity
-        implements StepAdapter.ListItemClickListener{
+    implements StepListFragment.OnStepClickListener {
 
     // Constant for logging
     private static final String TAG = RecipeActivity.class.getSimpleName();
@@ -34,11 +36,8 @@ public class RecipeActivity extends AppCompatActivity
 
     @BindView(R.id.recyclerview_ingredients)
     RecyclerView mIngredientRecyclerView;
-    @BindView(R.id.recyclerview_steps)
-    RecyclerView mStepRecyclerView;
 
     private IngredientAdapter mIngredientAdapter;
-    private StepAdapter mStepAdapter;
 
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<Step> mSteps;
@@ -81,24 +80,41 @@ public class RecipeActivity extends AppCompatActivity
             mIngredientRecyclerView.setNestedScrollingEnabled(false);
             mIngredientAdapter.setmIngredients(mRecipe.getIngredients());
 
+//            mSteps = mRecipe.getSteps();
+//            LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
+//            mStepRecyclerView.setLayoutManager(layoutManager2);
+//            mStepRecyclerView.setHasFixedSize(true);
+//            mStepAdapter = new StepAdapter(this);
+//            mStepRecyclerView.setAdapter(mStepAdapter);
+//            mStepRecyclerView.setNestedScrollingEnabled(false);
+//            mStepAdapter.setmSteps(mSteps);
+
+            // pass steps data to step list fragment
             mSteps = mRecipe.getSteps();
-            LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
-            mStepRecyclerView.setLayoutManager(layoutManager2);
-            mStepRecyclerView.setHasFixedSize(true);
-            mStepAdapter = new StepAdapter(this);
-            mStepRecyclerView.setAdapter(mStepAdapter);
-            mStepRecyclerView.setNestedScrollingEnabled(false);
-            mStepAdapter.setmSteps(mSteps);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("steps", mSteps);
+            StepListFragment stepListFragment = new StepListFragment();
+            stepListFragment.setArguments(bundle);
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.step_list_container, stepListFragment)
+                    .commit();
         }
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-        Context context = RecipeActivity.this;
-        Class destinationActivity = StepActivity.class;
-        Intent startStepActivityIntent = new Intent(context, destinationActivity);
-        Step stepToPass = mSteps.get(clickedItemIndex);
-        startStepActivityIntent.putExtra("Step", stepToPass);
-        startActivity(startStepActivityIntent);
+    public void onStepSelected(int position) {
+        Toast.makeText(this, "Position clicked = " + position, Toast.LENGTH_LONG).show();
     }
+
+//    @Override
+//    public void onListItemClick(int clickedItemIndex) {
+//        Context context = RecipeActivity.this;
+//        Class destinationActivity = StepActivity.class;
+//        Intent startStepActivityIntent = new Intent(context, destinationActivity);
+//        Step stepToPass = mSteps.get(clickedItemIndex);
+//        startStepActivityIntent.putExtra("Step", stepToPass);
+//        startActivity(startStepActivityIntent);
+//    }
 }
