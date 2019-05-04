@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.bakingapp.model.Step;
@@ -41,30 +42,6 @@ public class StepFragment extends Fragment {
     @BindView(R.id.tv_step_desc)
     TextView mDescTextView;
 
-//    OnPrevStepClickListener mCallbackPrevious;
-//    OnNextStepClickListener mCallbackNext;
-//
-//    public interface OnPrevStepClickListener {
-//        void onPrevStepClick(int position);
-//    }
-//
-//    public interface OnNextStepClickListener {
-//        void onNextStepClick(int position);
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//
-//        try {
-//            mCallbackPrevious = (OnPrevStepClickListener) context;
-//            mCallbackNext = (OnNextStepClickListener) context;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(context.toString()
-//                    + " must implement click listeners");
-//        }
-//    }
-
     public StepFragment() {
 
     }
@@ -85,8 +62,6 @@ public class StepFragment extends Fragment {
         if(fileExt.equals("mp4")) {
             initializePlayer(Uri.parse(mStep.getVideoUrl()));
         }
-
-        // Set up click listeners for prev and next buttons
 
         return rootView;
     }

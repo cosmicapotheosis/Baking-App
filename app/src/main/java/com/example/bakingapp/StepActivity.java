@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.bakingapp.model.Step;
@@ -37,11 +39,18 @@ public class StepActivity extends AppCompatActivity {
     ArrayList<Step> mSteps;
     int mCurrentIndex;
 
+    @BindView(R.id.prev_button)
+    Button mPrevButton;
+
+    @BindView(R.id.next_button)
+    Button mNextButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step);
 
+        ButterKnife.bind(this);
 
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity.hasExtra("Steps") && intentThatStartedThisActivity.hasExtra("CurrentIndex")) {
@@ -51,7 +60,7 @@ public class StepActivity extends AppCompatActivity {
 
             setTitle(mSteps.get(mCurrentIndex).getShortDescription());
 
-            // Create com.example.bakingapp.StepFragment
+            // Create StepFragment
             Bundle bundle = new Bundle();
             bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
             StepFragment stepFragment = new StepFragment();
@@ -62,5 +71,35 @@ public class StepActivity extends AppCompatActivity {
                     .add(R.id.step_container, stepFragment)
                     .commit();
         }
+    }
+
+    public void onPrevStepClick(View view) {
+        mCurrentIndex--;
+        setTitle(mSteps.get(mCurrentIndex).getShortDescription());
+        // Create StepFragment
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
+        StepFragment stepFragment = new StepFragment();
+        stepFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.step_container, stepFragment)
+                .commit();
+    }
+
+    public void onNextStepClick(View view) {
+        mCurrentIndex++;
+        setTitle(mSteps.get(mCurrentIndex).getShortDescription());
+        // Create StepFragment
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
+        StepFragment stepFragment = new StepFragment();
+        stepFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.step_container, stepFragment)
+                .commit();
     }
 }
