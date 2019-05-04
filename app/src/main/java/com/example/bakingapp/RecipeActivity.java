@@ -42,6 +42,8 @@ public class RecipeActivity extends AppCompatActivity
     private ArrayList<Ingredient> mIngredients;
     private ArrayList<Step> mSteps;
 
+    private Boolean mTwoPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,20 +92,51 @@ public class RecipeActivity extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .add(R.id.step_list_container, stepListFragment)
                     .commit();
+
+            // Display fragment if two pane view
+            if (findViewById(R.id.two_pane_step_container_container) != null) {
+                mTwoPane = true;
+                // Set the Step fragment to display the first step
+                Bundle b = new Bundle();
+                b.putParcelable("Step", mSteps.get(0));
+                StepFragment stepFragment = new StepFragment();
+                stepFragment.setArguments(b);
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.step_container_two_pane, stepFragment)
+                        .commit();
+            } else {
+                mTwoPane = false;
+            }
         }
     }
 
     /**
-     * Start a new Activity when a step list item is clicked
+     * Start a new Activity when a step list item is clicked,
+     * or if it's a two pane view populate the step fragment
      * @param position
      */
     @Override
     public void onStepSelected(int position) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("Step", mSteps.get(position));
+        if (mTwoPane) {
+            // Set the Step fragment to display the clicked step
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("Step", mSteps.get(position));
+            StepFragment stepFragment = new StepFragment();
+            stepFragment.setArguments(bundle);
 
-        final Intent intent = new Intent(this, StepActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.step_container_two_pane, stepFragment)
+                    .commit();
+
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("Step", mSteps.get(position));
+
+            final Intent intent = new Intent(this, StepActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
     }
 }
