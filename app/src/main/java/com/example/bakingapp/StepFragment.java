@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,7 @@ public class StepFragment extends Fragment {
         // Initialize the player if the url is a video
         String fileExt = Files.getFileExtension(mStep.getVideoUrl());
         if(fileExt.equals("mp4")) {
+            Log.d(TAG, "initializing player");
             initializePlayer(Uri.parse(mStep.getVideoUrl()));
         }
 

@@ -35,7 +35,7 @@ public class StepActivity extends AppCompatActivity {
 
     // Constant for logging
     private static final String TAG = StepActivity.class.getSimpleName();
-    // TODO Refactor to pass mSteps and index instead of mStep
+
     ArrayList<Step> mSteps;
     int mCurrentIndex;
 
@@ -60,6 +60,8 @@ public class StepActivity extends AppCompatActivity {
 
             setTitle(mSteps.get(mCurrentIndex).getShortDescription());
 
+            setButtonsVis(mCurrentIndex);
+
             // Create StepFragment
             Bundle bundle = new Bundle();
             bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
@@ -76,6 +78,7 @@ public class StepActivity extends AppCompatActivity {
     public void onPrevStepClick(View view) {
         mCurrentIndex--;
         setTitle(mSteps.get(mCurrentIndex).getShortDescription());
+        setButtonsVis(mCurrentIndex);
         // Create StepFragment
         Bundle bundle = new Bundle();
         bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
@@ -91,6 +94,7 @@ public class StepActivity extends AppCompatActivity {
     public void onNextStepClick(View view) {
         mCurrentIndex++;
         setTitle(mSteps.get(mCurrentIndex).getShortDescription());
+        setButtonsVis(mCurrentIndex);
         // Create StepFragment
         Bundle bundle = new Bundle();
         bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
@@ -101,5 +105,16 @@ public class StepActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.step_container, stepFragment)
                 .commit();
+    }
+
+    public void setButtonsVis(int index) {
+        mPrevButton.setVisibility(View.VISIBLE);
+        mNextButton.setVisibility(View.VISIBLE);
+        if (index == (mSteps.size() -1)) {
+            mNextButton.setVisibility(View.INVISIBLE);
+        }
+        if (index == 0) {
+            mPrevButton.setVisibility(View.INVISIBLE);
+        }
     }
 }

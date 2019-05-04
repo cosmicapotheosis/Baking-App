@@ -26,6 +26,8 @@ import butterknife.ButterKnife;
 public class RecipeActivity extends AppCompatActivity
     implements StepListFragment.OnStepClickListener {
 
+    // TODO Hide navigation buttons if step is first or last
+
     // Constant for logging
     private static final String TAG = RecipeActivity.class.getSimpleName();
 
@@ -121,6 +123,11 @@ public class RecipeActivity extends AppCompatActivity
             // Set the Step fragment to display the clicked step
             Bundle bundle = new Bundle();
             bundle.putParcelable("Step", mSteps.get(position));
+            Log.d(TAG, mSteps.get(position).getDescription());
+            Log.d(TAG, mSteps.get(position).getShortDescription());
+            Log.d(TAG, mSteps.get(position).getThumbnailUrl());
+            Log.d(TAG, mSteps.get(position).getVideoUrl());
+            Log.d(TAG, Integer.toString(mSteps.get(position).getId()));
             StepFragment stepFragment = new StepFragment();
             stepFragment.setArguments(bundle);
 
