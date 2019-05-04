@@ -80,16 +80,7 @@ public class RecipeActivity extends AppCompatActivity
             mIngredientRecyclerView.setNestedScrollingEnabled(false);
             mIngredientAdapter.setmIngredients(mRecipe.getIngredients());
 
-//            mSteps = mRecipe.getSteps();
-//            LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
-//            mStepRecyclerView.setLayoutManager(layoutManager2);
-//            mStepRecyclerView.setHasFixedSize(true);
-//            mStepAdapter = new StepAdapter(this);
-//            mStepRecyclerView.setAdapter(mStepAdapter);
-//            mStepRecyclerView.setNestedScrollingEnabled(false);
-//            mStepAdapter.setmSteps(mSteps);
-
-            // pass steps data to step list fragment
+            // Create steps list fragment
             mSteps = mRecipe.getSteps();
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("steps", mSteps);
@@ -106,15 +97,12 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public void onStepSelected(int position) {
         Toast.makeText(this, "Position clicked = " + position, Toast.LENGTH_LONG).show();
-    }
 
-//    @Override
-//    public void onListItemClick(int clickedItemIndex) {
-//        Context context = RecipeActivity.this;
-//        Class destinationActivity = StepActivity.class;
-//        Intent startStepActivityIntent = new Intent(context, destinationActivity);
-//        Step stepToPass = mSteps.get(clickedItemIndex);
-//        startStepActivityIntent.putExtra("Step", stepToPass);
-//        startActivity(startStepActivityIntent);
-//    }
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Step", mSteps.get(position));
+
+        final Intent intent = new Intent(this, StepActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 }
