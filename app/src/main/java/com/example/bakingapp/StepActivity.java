@@ -24,6 +24,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.common.io.Files;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -31,8 +33,9 @@ public class StepActivity extends AppCompatActivity {
 
     // Constant for logging
     private static final String TAG = StepActivity.class.getSimpleName();
-
-    Step mStep;
+    // TODO Refactor to pass mSteps and index instead of mStep
+    ArrayList<Step> mSteps;
+    int mCurrentIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +44,16 @@ public class StepActivity extends AppCompatActivity {
 
 
         Intent intentThatStartedThisActivity = getIntent();
-        if (intentThatStartedThisActivity.hasExtra("Step")) {
+        if (intentThatStartedThisActivity.hasExtra("Steps") && intentThatStartedThisActivity.hasExtra("CurrentIndex")) {
             // save step info to member variable
-            mStep = intentThatStartedThisActivity.getParcelableExtra("Step");
-            setTitle(mStep.getShortDescription());
+            mSteps = intentThatStartedThisActivity.getParcelableArrayListExtra("Steps");
+            mCurrentIndex = intentThatStartedThisActivity.getIntExtra("CurrentIndex", 0);
+
+            setTitle(mSteps.get(mCurrentIndex).getShortDescription());
 
             // Create com.example.bakingapp.StepFragment
             Bundle bundle = new Bundle();
-            bundle.putParcelable("Step", mStep);
+            bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
             StepFragment stepFragment = new StepFragment();
             stepFragment.setArguments(bundle);
 

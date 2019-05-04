@@ -39,7 +39,6 @@ public class RecipeActivity extends AppCompatActivity
 
     private IngredientAdapter mIngredientAdapter;
 
-    private ArrayList<Ingredient> mIngredients;
     private ArrayList<Step> mSteps;
 
     private Boolean mTwoPane;
@@ -132,7 +131,8 @@ public class RecipeActivity extends AppCompatActivity
 
         } else {
             Bundle bundle = new Bundle();
-            bundle.putParcelable("Step", mSteps.get(position));
+            bundle.putParcelableArrayList("Steps", mSteps);
+            bundle.putInt("CurrentIndex", position);
 
             final Intent intent = new Intent(this, StepActivity.class);
             intent.putExtras(bundle);
