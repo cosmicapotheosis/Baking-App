@@ -35,6 +35,9 @@ public class StepActivity extends AppCompatActivity {
 
     // Constant for logging
     private static final String TAG = StepActivity.class.getSimpleName();
+    public static final String STEP_LIST = "steps";
+
+    public static final String CURRENT_INDEX = "current_index";
 
     ArrayList<Step> mSteps;
     int mCurrentIndex;
@@ -53,26 +56,30 @@ public class StepActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Intent intentThatStartedThisActivity = getIntent();
-        if (intentThatStartedThisActivity.hasExtra("Steps") && intentThatStartedThisActivity.hasExtra("CurrentIndex")) {
+
+        if (savedInstanceState != null) {
+            mSteps = savedInstanceState.getParcelableArrayList(STEP_LIST);
+            mCurrentIndex = savedInstanceState.getInt(CURRENT_INDEX);
+        } else if (intentThatStartedThisActivity.hasExtra("Steps") && intentThatStartedThisActivity.hasExtra("CurrentIndex")) {
             // save step info to member variable
             mSteps = intentThatStartedThisActivity.getParcelableArrayListExtra("Steps");
             mCurrentIndex = intentThatStartedThisActivity.getIntExtra("CurrentIndex", 0);
-
-            setTitle(mSteps.get(mCurrentIndex).getShortDescription());
-
-            setButtonsVis(mCurrentIndex);
-
-            // Create StepFragment
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
-            StepFragment stepFragment = new StepFragment();
-            stepFragment.setArguments(bundle);
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .add(R.id.step_container, stepFragment)
-                    .commit();
         }
+
+        setTitle(mSteps.get(mCurrentIndex).getShortDescription());
+
+        setButtonsVis(mCurrentIndex);
+
+        // Create StepFragment
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
+        StepFragment stepFragment = new StepFragment();
+        stepFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .add(R.id.step_container, stepFragment)
+                .commit();
     }
 
     public void onPrevStepClick(View view) {
@@ -116,5 +123,12 @@ public class StepActivity extends AppCompatActivity {
         if (index == 0) {
             mPrevButton.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STEP_LIST, mSteps);
+        outState.putInt(CURRENT_INDEX, mCurrentIndex);
     }
 }

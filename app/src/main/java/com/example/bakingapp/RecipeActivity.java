@@ -23,13 +23,14 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+// TODO use lifecycle methods and check savedinstancestate
 public class RecipeActivity extends AppCompatActivity
     implements StepListFragment.OnStepClickListener {
 
-    // TODO Hide navigation buttons if step is first or last
-
     // Constant for logging
     private static final String TAG = RecipeActivity.class.getSimpleName();
+
+    public static final String CURRENT_INDEX = "current_index";
 
     private Recipe mRecipe;
 
@@ -45,12 +46,18 @@ public class RecipeActivity extends AppCompatActivity
 
     private Boolean mTwoPane;
 
+    int mCurrentIndex;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
         ButterKnife.bind(this);
+
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(CURRENT_INDEX);
+        }
 
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity.hasExtra("Recipe")) {
@@ -99,7 +106,7 @@ public class RecipeActivity extends AppCompatActivity
                 mTwoPane = true;
                 // Set the Step fragment to display the first step
                 Bundle b = new Bundle();
-                b.putParcelable("Step", mSteps.get(0));
+                b.putParcelable("Step", mSteps.get(mCurrentIndex));
                 StepFragment stepFragment = new StepFragment();
                 stepFragment.setArguments(b);
 
@@ -120,6 +127,8 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public void onStepSelected(int position) {
         if (mTwoPane) {
+            // Update current index state variable
+            mCurrentIndex = position;
             // Set the Step fragment to display the clicked step
             Bundle bundle = new Bundle();
             bundle.putParcelable("Step", mSteps.get(position));
@@ -145,5 +154,11 @@ public class RecipeActivity extends AppCompatActivity
             intent.putExtras(bundle);
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_INDEX, mCurrentIndex);
     }
 }

@@ -35,6 +35,7 @@ public class StepFragment extends Fragment {
 
     // Constant for logging
     private static final String TAG = StepFragment.class.getSimpleName();
+    public static final String STEP = "step";
 
     @BindView(R.id.playerView)
     SimpleExoPlayerView mPlayerView;
@@ -42,6 +43,8 @@ public class StepFragment extends Fragment {
 
     @BindView(R.id.tv_step_desc)
     TextView mDescTextView;
+
+    Step mStep;
 
     public StepFragment() {
 
@@ -53,7 +56,11 @@ public class StepFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, rootView);
 
-        Step mStep = getArguments().getParcelable("Step");
+        if(savedInstanceState != null) {
+            mStep = savedInstanceState.getParcelable(STEP);
+        } else {
+            mStep = getArguments().getParcelable("Step");
+        }
 
         mDescTextView.setText(mStep.getDescription());
         mPlayerView.setVisibility(View.INVISIBLE);
@@ -108,5 +115,10 @@ public class StepFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         releasePlayer();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(STEP, mStep);
     }
 }
