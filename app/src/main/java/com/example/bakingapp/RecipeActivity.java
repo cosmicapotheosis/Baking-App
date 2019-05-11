@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.bakingapp.model.Ingredient;
 import com.example.bakingapp.model.Recipe;
 import com.example.bakingapp.model.Step;
+import com.example.bakingapp.widget.RecipeWidgetService;
 import com.google.common.base.Strings;
 import com.squareup.picasso.Picasso;
 
@@ -66,7 +67,7 @@ public class RecipeActivity extends AppCompatActivity
 
             // Set the preferences that defines the recipe that will be
             // displayed in the widget
-            Preferences.saveRecipe(this, mRecipe);
+            RecipeWidgetService.updateWidget(this, mRecipe);
 
             if (Strings.isNullOrEmpty(mRecipe.getImage())) {
                 Picasso.get()
