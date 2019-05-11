@@ -5,6 +5,7 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.bakingapp.Preferences;
+import com.example.bakingapp.R;
 import com.example.bakingapp.model.Recipe;
 
 public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -38,7 +39,11 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public RemoteViews getViewAt(int position) {
-        return null;
+        RemoteViews row = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_ingredient);
+
+        row.setTextViewText(R.id.ingredient_item_tv, recipe.getIngredients().get(position).getIngredient());
+
+        return row;
     }
 
     @Override
@@ -48,16 +53,16 @@ public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 }

@@ -21,6 +21,8 @@ public class RecipeWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return null;
+        intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+
+        return new RecipeRemoteViewsFactory(getApplicationContext());
     }
 }
