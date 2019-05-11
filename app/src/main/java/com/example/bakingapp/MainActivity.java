@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
 
         service = RetrofitClientInstance.getRetrofitInstance().create(RecipeService.class);
         getRecipes();
+
+        Recipe recipeFromPreferences = Preferences.loadRecipe(this);
     }
 
     private void getRecipes() {
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
             @Override
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
                 if (response.isSuccessful()) {
+                    mRecipes = response.body();
                     // Iterate through list of Recipes and assign each Recipe a thumbnail url
                     ArrayList<String> recipeNames = new ArrayList<String>();
                     ArrayList<String> thumbnailUrls = new ArrayList<String>();
@@ -78,10 +81,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
                         thumbnailUrls.add(getRecyclerViewThumbnailUrl(r));
                     }
                     // Populate RecyclerView
-                    mRecipes = response.body();
                     mRecipeAdapter.setmRecipeNames(recipeNames);
                     mRecipeAdapter.setmThumbnailUrls(thumbnailUrls);
-                    Log.d(TAG, mRecipes.get(0).getIngredients().get(0).getIngredient());
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());

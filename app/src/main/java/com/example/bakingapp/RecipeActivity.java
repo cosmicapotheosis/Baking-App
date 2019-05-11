@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-// TODO use lifecycle methods and check savedinstancestate
 public class RecipeActivity extends AppCompatActivity
     implements StepListFragment.OnStepClickListener {
 
@@ -64,6 +63,10 @@ public class RecipeActivity extends AppCompatActivity
             mRecipe = intentThatStartedThisActivity.getParcelableExtra("Recipe");
             setTitle(mRecipe.getName());
             mSteps = mRecipe.getSteps();
+
+            // Set the preferences that defines the recipe that will be
+            // displayed in the widget
+            Preferences.saveRecipe(this, mRecipe);
 
             if (Strings.isNullOrEmpty(mRecipe.getImage())) {
                 Picasso.get()
