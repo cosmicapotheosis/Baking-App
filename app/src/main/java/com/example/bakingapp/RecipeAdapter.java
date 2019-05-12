@@ -139,8 +139,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
 
         public RecipeAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-            mRecipeNameTextView = (TextView) itemView.findViewById(R.id.tv_recipe_name);
-            mRecipeThumbnailImageView = (ImageView) itemView.findViewById(R.id.iv_recipe_thumbnail);
+            mRecipeNameTextView = itemView.findViewById(R.id.tv_recipe_name);
+            mRecipeThumbnailImageView = itemView.findViewById(R.id.iv_recipe_thumbnail);
             itemView.setOnClickListener(this);
         }
 

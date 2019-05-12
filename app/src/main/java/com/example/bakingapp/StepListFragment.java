@@ -54,7 +54,7 @@ public class StepListFragment extends Fragment
         StepAdapter stepAdapter = new StepAdapter(this);
         stepAdapter.setmSteps(steps);
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_steps);
+        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerview_steps);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);

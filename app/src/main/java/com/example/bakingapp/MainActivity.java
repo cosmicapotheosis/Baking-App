@@ -62,8 +62,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Lis
 
         service = RetrofitClientInstance.getRetrofitInstance().create(RecipeService.class);
         getRecipes();
-
-        Recipe recipeFromPreferences = Preferences.loadRecipe(this);
     }
 
     private void getRecipes() {

@@ -132,8 +132,8 @@ public class StepAdapter extends
 
         public StepAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-            mStepShortDescTextView = (TextView) itemView.findViewById(R.id.tv_step_short_desc);
-            mStepThumbnailImageView = (ImageView) itemView.findViewById(R.id.iv_step_thumbnail);
+            mStepShortDescTextView = itemView.findViewById(R.id.tv_step_short_desc);
+            mStepThumbnailImageView = itemView.findViewById(R.id.iv_step_thumbnail);
             itemView.setOnClickListener(this);
         }
 
