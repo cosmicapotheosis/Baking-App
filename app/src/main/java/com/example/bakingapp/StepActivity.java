@@ -48,6 +48,8 @@ public class StepActivity extends AppCompatActivity {
     @BindView(R.id.next_button)
     Button mNextButton;
 
+    StepFragment mStepFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,22 +66,22 @@ public class StepActivity extends AppCompatActivity {
             // save step info to member variable
             mSteps = intentThatStartedThisActivity.getParcelableArrayListExtra("Steps");
             mCurrentIndex = intentThatStartedThisActivity.getIntExtra("CurrentIndex", 0);
+
+            // Create StepFragment
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
+            mStepFragment = new StepFragment();
+            mStepFragment.setArguments(bundle);
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.step_container, mStepFragment)
+                    .commit();
         }
 
         setTitle(mSteps.get(mCurrentIndex).getShortDescription());
 
         setButtonsVis(mCurrentIndex);
-
-        // Create StepFragment
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("Step", mSteps.get(mCurrentIndex));
-        StepFragment stepFragment = new StepFragment();
-        stepFragment.setArguments(bundle);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.step_container, stepFragment)
-                .commit();
     }
 
     public void onPrevStepClick(View view) {

@@ -108,15 +108,17 @@ public class RecipeActivity extends AppCompatActivity
             // Display fragment if two pane view
             if (findViewById(R.id.two_pane_step_container_container) != null) {
                 mTwoPane = true;
-                // Set the Step fragment to display the first step
-                Bundle b = new Bundle();
-                b.putParcelable("Step", mSteps.get(mCurrentIndex));
-                StepFragment stepFragment = new StepFragment();
-                stepFragment.setArguments(b);
+                if(savedInstanceState == null) {
+                    // Set the Step fragment to display the first step
+                    Bundle b = new Bundle();
+                    b.putParcelable("Step", mSteps.get(mCurrentIndex));
+                    StepFragment stepFragment = new StepFragment();
+                    stepFragment.setArguments(b);
 
-                fragmentManager.beginTransaction()
-                        .add(R.id.step_container_two_pane, stepFragment)
-                        .commit();
+                    fragmentManager.beginTransaction()
+                            .add(R.id.step_container_two_pane, stepFragment)
+                            .commit();
+                }
             } else {
                 mTwoPane = false;
             }

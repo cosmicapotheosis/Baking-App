@@ -36,6 +36,8 @@ public class StepFragment extends Fragment {
     // Constant for logging
     private static final String TAG = StepFragment.class.getSimpleName();
     public static final String STEP = "step";
+    public static final String PLAYER_POSITION = "playerposition";
+    public static final String PLAYER_STATE = "playerstate";
 
     @BindView(R.id.playerView)
     SimpleExoPlayerView mPlayerView;
@@ -45,6 +47,9 @@ public class StepFragment extends Fragment {
     TextView mDescTextView;
 
     Step mStep;
+
+    Boolean mPlayWhenReady = true;
+    Long mPlayerPosition = 0L;
 
     public StepFragment() {
 
@@ -58,6 +63,10 @@ public class StepFragment extends Fragment {
 
         if(savedInstanceState != null) {
             mStep = savedInstanceState.getParcelable(STEP);
+            mPlayWhenReady = savedInstanceState.getBoolean(PLAYER_STATE);
+            mPlayerPosition = savedInstanceState.getLong(PLAYER_POSITION);
+            Log.d(TAG, "Saved position: " + mPlayerPosition);
+            Log.d(TAG, "Saved state: " + mPlayWhenReady);
         } else {
             mStep = getArguments().getParcelable("Step");
         }
@@ -73,6 +82,22 @@ public class StepFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            initializePlayer(Uri.parse(mStep.getVideoUrl()));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Util.SDK_INT <= 23 || mExoPlayer == null) {
+            initializePlayer(Uri.parse(mStep.getVideoUrl()));
+        }
     }
 
     /**
@@ -93,7 +118,11 @@ public class StepFragment extends Fragment {
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.seekTo(mPlayerPosition);
+            mExoPlayer.setPlayWhenReady(mPlayWhenReady);
+        } else {
+            mExoPlayer.seekTo(mPlayerPosition);
+            mExoPlayer.setPlayWhenReady(mPlayWhenReady);
         }
     }
 
@@ -108,17 +137,43 @@ public class StepFragment extends Fragment {
         }
     }
 
-    /**
-     * Release the player when the activity is destroyed.
-     */
+
+//    /**
+//     * Release the player when the activity is destroyed.
+//     */
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        releasePlayer();
+//    }
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
+            mPlayWhenReady = mExoPlayer.getPlayWhenReady();
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
+            mPlayWhenReady = mExoPlayer.getPlayWhenReady();
+            releasePlayer();
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        // Save player position
+        outState.putLong(PLAYER_POSITION, mPlayerPosition);
+        // Save player state
+        outState.putBoolean(PLAYER_STATE, mPlayWhenReady);
+        // Save the step data
         outState.putParcelable(STEP, mStep);
     }
 }
